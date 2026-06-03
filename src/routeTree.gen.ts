@@ -11,7 +11,15 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as AppRouteImport } from './routes/app'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AppIndexRouteImport } from './routes/app.index'
+import { Route as AppWorkoutRouteImport } from './routes/app.workout'
+import { Route as AppWeekRouteImport } from './routes/app.week'
+import { Route as AppSubscriptionRouteImport } from './routes/app.subscription'
+import { Route as AppProgressRouteImport } from './routes/app.progress'
+import { Route as AppProfileRouteImport } from './routes/app.profile'
+import { Route as AppNutritionRouteImport } from './routes/app.nutrition'
 
 const OnboardingRoute = OnboardingRouteImport.update({
   id: '/onboarding',
@@ -23,38 +31,135 @@ const AuthRoute = AuthRouteImport.update({
   path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AppRoute = AppRouteImport.update({
+  id: '/app',
+  path: '/app',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AppIndexRoute = AppIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppWorkoutRoute = AppWorkoutRouteImport.update({
+  id: '/workout',
+  path: '/workout',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppWeekRoute = AppWeekRouteImport.update({
+  id: '/week',
+  path: '/week',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppSubscriptionRoute = AppSubscriptionRouteImport.update({
+  id: '/subscription',
+  path: '/subscription',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppProgressRoute = AppProgressRouteImport.update({
+  id: '/progress',
+  path: '/progress',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppProfileRoute = AppProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppNutritionRoute = AppNutritionRouteImport.update({
+  id: '/nutrition',
+  path: '/nutrition',
+  getParentRoute: () => AppRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/app': typeof AppRouteWithChildren
   '/auth': typeof AuthRoute
   '/onboarding': typeof OnboardingRoute
+  '/app/nutrition': typeof AppNutritionRoute
+  '/app/profile': typeof AppProfileRoute
+  '/app/progress': typeof AppProgressRoute
+  '/app/subscription': typeof AppSubscriptionRoute
+  '/app/week': typeof AppWeekRoute
+  '/app/workout': typeof AppWorkoutRoute
+  '/app/': typeof AppIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/onboarding': typeof OnboardingRoute
+  '/app/nutrition': typeof AppNutritionRoute
+  '/app/profile': typeof AppProfileRoute
+  '/app/progress': typeof AppProgressRoute
+  '/app/subscription': typeof AppSubscriptionRoute
+  '/app/week': typeof AppWeekRoute
+  '/app/workout': typeof AppWorkoutRoute
+  '/app': typeof AppIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/app': typeof AppRouteWithChildren
   '/auth': typeof AuthRoute
   '/onboarding': typeof OnboardingRoute
+  '/app/nutrition': typeof AppNutritionRoute
+  '/app/profile': typeof AppProfileRoute
+  '/app/progress': typeof AppProgressRoute
+  '/app/subscription': typeof AppSubscriptionRoute
+  '/app/week': typeof AppWeekRoute
+  '/app/workout': typeof AppWorkoutRoute
+  '/app/': typeof AppIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/auth' | '/onboarding'
+  fullPaths:
+    | '/'
+    | '/app'
+    | '/auth'
+    | '/onboarding'
+    | '/app/nutrition'
+    | '/app/profile'
+    | '/app/progress'
+    | '/app/subscription'
+    | '/app/week'
+    | '/app/workout'
+    | '/app/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth' | '/onboarding'
-  id: '__root__' | '/' | '/auth' | '/onboarding'
+  to:
+    | '/'
+    | '/auth'
+    | '/onboarding'
+    | '/app/nutrition'
+    | '/app/profile'
+    | '/app/progress'
+    | '/app/subscription'
+    | '/app/week'
+    | '/app/workout'
+    | '/app'
+  id:
+    | '__root__'
+    | '/'
+    | '/app'
+    | '/auth'
+    | '/onboarding'
+    | '/app/nutrition'
+    | '/app/profile'
+    | '/app/progress'
+    | '/app/subscription'
+    | '/app/week'
+    | '/app/workout'
+    | '/app/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AppRoute: typeof AppRouteWithChildren
   AuthRoute: typeof AuthRoute
   OnboardingRoute: typeof OnboardingRoute
 }
@@ -75,6 +180,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/app': {
+      id: '/app'
+      path: '/app'
+      fullPath: '/app'
+      preLoaderRoute: typeof AppRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -82,11 +194,83 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/app/': {
+      id: '/app/'
+      path: '/'
+      fullPath: '/app/'
+      preLoaderRoute: typeof AppIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/workout': {
+      id: '/app/workout'
+      path: '/workout'
+      fullPath: '/app/workout'
+      preLoaderRoute: typeof AppWorkoutRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/week': {
+      id: '/app/week'
+      path: '/week'
+      fullPath: '/app/week'
+      preLoaderRoute: typeof AppWeekRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/subscription': {
+      id: '/app/subscription'
+      path: '/subscription'
+      fullPath: '/app/subscription'
+      preLoaderRoute: typeof AppSubscriptionRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/progress': {
+      id: '/app/progress'
+      path: '/progress'
+      fullPath: '/app/progress'
+      preLoaderRoute: typeof AppProgressRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/profile': {
+      id: '/app/profile'
+      path: '/profile'
+      fullPath: '/app/profile'
+      preLoaderRoute: typeof AppProfileRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/nutrition': {
+      id: '/app/nutrition'
+      path: '/nutrition'
+      fullPath: '/app/nutrition'
+      preLoaderRoute: typeof AppNutritionRouteImport
+      parentRoute: typeof AppRoute
+    }
   }
 }
 
+interface AppRouteChildren {
+  AppNutritionRoute: typeof AppNutritionRoute
+  AppProfileRoute: typeof AppProfileRoute
+  AppProgressRoute: typeof AppProgressRoute
+  AppSubscriptionRoute: typeof AppSubscriptionRoute
+  AppWeekRoute: typeof AppWeekRoute
+  AppWorkoutRoute: typeof AppWorkoutRoute
+  AppIndexRoute: typeof AppIndexRoute
+}
+
+const AppRouteChildren: AppRouteChildren = {
+  AppNutritionRoute: AppNutritionRoute,
+  AppProfileRoute: AppProfileRoute,
+  AppProgressRoute: AppProgressRoute,
+  AppSubscriptionRoute: AppSubscriptionRoute,
+  AppWeekRoute: AppWeekRoute,
+  AppWorkoutRoute: AppWorkoutRoute,
+  AppIndexRoute: AppIndexRoute,
+}
+
+const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AppRoute: AppRouteWithChildren,
   AuthRoute: AuthRoute,
   OnboardingRoute: OnboardingRoute,
 }
