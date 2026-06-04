@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Shell, Card, SectionTitle } from "@/components/Shell";
 import { useStore } from "@/lib/pd-store";
 import { Droplets, Plus, Minus, Flame } from "lucide-react";
-import { PremiumLock } from "@/components/Premium";
+import { WeeklyGate } from "@/components/Premium";
 
 export const Route = createFileRoute("/app/nutrition")({
   head: () => ({ meta: [{ title: "Alimentação · Personal Digital" }, { name: "description", content: "Sugestões de refeições e hidratação." }] }),
@@ -17,24 +17,16 @@ function Nutrition() {
   const glassesTarget = Math.round(plan.water / 250);
   const pct = Math.min(100, (glasses / glassesTarget) * 100);
 
-  if (plan.tier !== "premium") {
-    return (
-      <Shell>
-        <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">Hoje</p>
-        <h1 className="mt-1 text-3xl font-bold tracking-tight">Sua alimentação</h1>
-        <PremiumLock
-          title="Plano alimentar é Premium"
-          description="Receba sugestões personalizadas de refeições, metas de macros e controle de hidratação."
-        />
-      </Shell>
-    );
-  }
-
   return (
     <Shell>
       <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">Hoje</p>
       <h1 className="mt-1 text-3xl font-bold tracking-tight">Sua alimentação</h1>
 
+      <WeeklyGate
+        feature="nutrition"
+        title="Dieta e hidratação 1x por semana no Básico"
+        description="Use seu acesso desta semana para ver o plano alimentar e controlar a hidratação de hoje, ou tenha tudo diário no Premium."
+      >
       <Card className="mt-5">
         <div className="flex items-center justify-between">
           <div>
