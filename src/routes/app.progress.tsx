@@ -48,7 +48,7 @@ function Progress() {
         description="Use seu acesso desta semana para registrar e visualizar sua evolução, ou tenha acompanhamento diário no Premium."
       >
 
-
+      {last ? (
       <Card className="mt-5">
         <div className="flex items-baseline justify-between">
           <div>
@@ -88,6 +88,12 @@ function Progress() {
           </svg>
         </div>
       </Card>
+      ) : (
+        <Card className="mt-5 text-center">
+          <p className="text-sm text-muted-foreground">Nenhuma medição registrada ainda. Faça seu primeiro registro abaixo.</p>
+        </Card>
+      )}
+
 
       <button onClick={() => setOpen(true)} className="mt-3 flex w-full items-center justify-center gap-2 rounded-2xl bg-primary py-3.5 font-semibold text-primary-foreground shadow-lime transition active:scale-[0.98]">
         <Plus className="h-5 w-5" /> Registrar medição
