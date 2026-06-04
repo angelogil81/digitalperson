@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Shell, Card, SectionTitle } from "@/components/Shell";
 import { useStore } from "@/lib/pd-store";
 import { Moon, Dumbbell } from "lucide-react";
+import { PremiumLock } from "@/components/Premium";
 
 export const Route = createFileRoute("/app/week")({
   head: () => ({ meta: [{ title: "Plano semanal · Personal Digital" }, { name: "description", content: "Veja sua divisão da semana." }] }),
@@ -12,6 +13,19 @@ function Week() {
   const { plan } = useStore();
   if (!plan) return null;
   const dayIdx = (new Date().getDay() + 6) % 7;
+
+  if (plan.tier !== "premium") {
+    return (
+      <Shell>
+        <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">Sua divisão</p>
+        <h1 className="mt-1 text-3xl font-bold tracking-tight">Plano semanal</h1>
+        <PremiumLock
+          title="Plano semanal é Premium"
+          description="No plano Básico você acessa apenas o treino diário. Desbloqueie a semana inteira no Premium."
+        />
+      </Shell>
+    );
+  }
 
   return (
     <Shell>
