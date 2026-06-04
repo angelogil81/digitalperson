@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Check, Timer, Repeat, Flame } from "lucide-react";
 import { Card, Shell, SectionTitle } from "@/components/Shell";
 import { useStore, getPlan, setPlan, todayISO } from "@/lib/pd-store";
+import { AdBanner } from "@/components/Premium";
 
 export const Route = createFileRoute("/app/workout")({
   head: () => ({ meta: [{ title: "Treino · Personal Digital" }, { name: "description", content: "Seu treino de hoje." }] }),
@@ -85,6 +86,8 @@ function Workout() {
       <button onClick={complete} disabled={completedToday} className="mt-6 w-full rounded-2xl bg-primary py-4 text-base font-semibold text-primary-foreground shadow-lime transition active:scale-[0.98] disabled:opacity-60">
         {completedToday ? "Treino concluído ✓" : "Concluir treino"}
       </button>
+
+      <AdBanner slot="Espaço de anúncio · 320x100" />
     </Shell>
   );
 }
