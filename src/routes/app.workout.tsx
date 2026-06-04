@@ -86,6 +86,8 @@ function Workout() {
       <button onClick={complete} disabled={completedToday} className="mt-6 w-full rounded-2xl bg-primary py-4 text-base font-semibold text-primary-foreground shadow-lime transition active:scale-[0.98] disabled:opacity-60">
         {completedToday ? "Treino concluído ✓" : "Concluir treino"}
       </button>
+
+      <AdBanner slot="Espaço de anúncio · 320x100" />
     </Shell>
   );
 }
