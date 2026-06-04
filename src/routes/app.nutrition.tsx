@@ -74,6 +74,7 @@ function Nutrition() {
           <p className="mt-1 text-sm">{profile.diet}</p>
         </Card>
       )}
+      </WeeklyGate>
 
       <p className="mt-6 px-2 text-center text-[11px] leading-relaxed text-muted-foreground">
         ⚕️ As sugestões são informativas. Consulte um nutricionista para um plano alimentar individualizado.
