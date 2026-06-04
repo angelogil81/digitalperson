@@ -27,6 +27,7 @@ export type Profile = {
 export type Exercise = { name: string; sets: number; reps: string; rest: string };
 export type DayPlan = { day: string; focus: string; rest?: boolean; exercises: Exercise[]; cardio?: string };
 export type MealPlan = { breakfast: string; lunch: string; snack: string; dinner: string };
+export type BasicFeature = "workout" | "nutrition" | "progress" | "week";
 export type Plan = {
   goalLabel: string;
   calories: number;
@@ -38,11 +39,14 @@ export type Plan = {
   completedDates: string[]; // YYYY-MM-DD
   progress: ProgressEntry[];
   tier: "basic" | "premium";
+  basicUsage?: Partial<Record<BasicFeature, string>>; // feature -> weekKey
 };
 
 const KEY_PROFILE = "pd_profile";
 const KEY_PLAN = "pd_plan";
 const KEY_AUTH = "pd_auth";
+
+export const SUPPORT_EMAIL = "suporte@personaldigital.app";
 
 export function getAuth(): { email: string; name: string } | null {
   if (typeof window === "undefined") return null;
@@ -97,4 +101,26 @@ export function useStore() {
 
 export function todayISO() {
   return new Date().toISOString().slice(0, 10);
+}
+
+// ISO week key (e.g. "2026-W23")
+export function weekKey(d: Date = new Date()) {
+  const date = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+  const dayNum = date.getUTCDay() || 7;
+  date.setUTCDate(date.getUTCDate() + 4 - dayNum);
+  const yearStart = new Date(Date.UTC(date.getUTCFullYear(), 0, 1));
+  const week = Math.ceil((((date.getTime() - yearStart.getTime()) / 86400000) + 1) / 7);
+  return `${date.getUTCFullYear()}-W${String(week).padStart(2, "0")}`;
+}
+
+export function unlockBasicFeature(feature: BasicFeature) {
+  const p = getPlan(); if (!p) return;
+  p.basicUsage = { ...(p.basicUsage || {}), [feature]: weekKey() };
+  setPlan(p);
+}
+
+export function isBasicFeatureUnlocked(plan: Plan | null, feature: BasicFeature) {
+  if (!plan) return false;
+  if (plan.tier === "premium") return true;
+  return plan.basicUsage?.[feature] === weekKey();
 }

@@ -1,8 +1,13 @@
 import type { ReactNode } from "react";
+import { useStore } from "@/lib/pd-store";
 
 export function Shell({ children }: { children: ReactNode }) {
+  const { plan } = useStore();
+  const isBasic = plan?.tier !== "premium";
+  // Extra bottom padding when the 320x50 ad footer is visible
+  const pad = isBasic ? "pb-48" : "pb-32";
   return (
-    <div className="mx-auto min-h-screen max-w-md px-5 pb-32 pt-6">
+    <div className={`mx-auto min-h-screen max-w-md px-5 pt-6 ${pad}`}>
       {children}
     </div>
   );
