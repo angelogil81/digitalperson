@@ -116,6 +116,9 @@ function Progress() {
           </Card>
         ))}
       </div>
+      </WeeklyGate>
+
+
 
       {open && (
         <div className="fixed inset-0 z-50 grid place-items-end bg-black/60 backdrop-blur-sm" onClick={() => setOpen(false)}>
