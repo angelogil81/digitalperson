@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Shell, Card, SectionTitle } from "@/components/Shell";
 import { useStore, getPlan, setPlan, todayISO } from "@/lib/pd-store";
 import { TrendingDown, TrendingUp, Plus } from "lucide-react";
+import { PremiumLock } from "@/components/Premium";
 
 export const Route = createFileRoute("/app/progress")({
   head: () => ({ meta: [{ title: "Evolução · Personal Digital" }, { name: "description", content: "Acompanhe sua evolução." }] }),
@@ -17,6 +18,20 @@ function Progress() {
   const [note, setNote] = useState("");
 
   if (!plan || !profile) return null;
+
+  if (plan.tier !== "premium") {
+    return (
+      <Shell>
+        <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">Sua jornada</p>
+        <h1 className="mt-1 text-3xl font-bold tracking-tight">Evolução</h1>
+        <PremiumLock
+          title="Evolução é Premium"
+          description="Registre peso e medidas, veja gráficos e acompanhe sua jornada completa."
+        />
+      </Shell>
+    );
+  }
+
 
   const entries = [...plan.progress].sort((a,b) => a.date.localeCompare(b.date));
   const first = entries[0];
