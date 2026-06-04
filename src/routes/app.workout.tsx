@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Check, Timer, Repeat, Flame } from "lucide-react";
 import { Card, Shell, SectionTitle } from "@/components/Shell";
 import { useStore, getPlan, setPlan, todayISO } from "@/lib/pd-store";
+import { AdBanner } from "@/components/Premium";
 
 export const Route = createFileRoute("/app/workout")({
   head: () => ({ meta: [{ title: "Treino · Personal Digital" }, { name: "description", content: "Seu treino de hoje." }] }),
