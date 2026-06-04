@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Shell, Card, SectionTitle } from "@/components/Shell";
 import { useStore, getPlan, setPlan, todayISO } from "@/lib/pd-store";
 import { TrendingDown, TrendingUp, Plus } from "lucide-react";
-import { PremiumLock } from "@/components/Premium";
+import { WeeklyGate } from "@/components/Premium";
 
 export const Route = createFileRoute("/app/progress")({
   head: () => ({ meta: [{ title: "Evolução · Personal Digital" }, { name: "description", content: "Acompanhe sua evolução." }] }),
@@ -19,24 +19,10 @@ function Progress() {
 
   if (!plan || !profile) return null;
 
-  if (plan.tier !== "premium") {
-    return (
-      <Shell>
-        <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">Sua jornada</p>
-        <h1 className="mt-1 text-3xl font-bold tracking-tight">Evolução</h1>
-        <PremiumLock
-          title="Evolução é Premium"
-          description="Registre peso e medidas, veja gráficos e acompanhe sua jornada completa."
-        />
-      </Shell>
-    );
-  }
-
-
   const entries = [...plan.progress].sort((a,b) => a.date.localeCompare(b.date));
   const first = entries[0];
   const last = entries[entries.length - 1];
-  const diff = last.weight - first.weight;
+  const diff = last ? last.weight - first.weight : 0;
   const trendingDown = diff < 0;
 
   function add() {
@@ -47,9 +33,8 @@ function Progress() {
     setOpen(false); setWeight(""); setWaist(""); setNote("");
   }
 
-  // Mini chart
-  const max = Math.max(...entries.map(e => e.weight));
-  const min = Math.min(...entries.map(e => e.weight));
+  const max = entries.length ? Math.max(...entries.map(e => e.weight)) : 0;
+  const min = entries.length ? Math.min(...entries.map(e => e.weight)) : 0;
   const range = max - min || 1;
 
   return (
@@ -57,6 +42,13 @@ function Progress() {
       <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">Sua jornada</p>
       <h1 className="mt-1 text-3xl font-bold tracking-tight">Evolução</h1>
 
+      <WeeklyGate
+        feature="progress"
+        title="Evolução 1x por semana no Básico"
+        description="Use seu acesso desta semana para registrar e visualizar sua evolução, ou tenha acompanhamento diário no Premium."
+      >
+
+      {last ? (
       <Card className="mt-5">
         <div className="flex items-baseline justify-between">
           <div>
@@ -96,6 +88,12 @@ function Progress() {
           </svg>
         </div>
       </Card>
+      ) : (
+        <Card className="mt-5 text-center">
+          <p className="text-sm text-muted-foreground">Nenhuma medição registrada ainda. Faça seu primeiro registro abaixo.</p>
+        </Card>
+      )}
+
 
       <button onClick={() => setOpen(true)} className="mt-3 flex w-full items-center justify-center gap-2 rounded-2xl bg-primary py-3.5 font-semibold text-primary-foreground shadow-lime transition active:scale-[0.98]">
         <Plus className="h-5 w-5" /> Registrar medição
@@ -118,6 +116,9 @@ function Progress() {
           </Card>
         ))}
       </div>
+      </WeeklyGate>
+
+
 
       {open && (
         <div className="fixed inset-0 z-50 grid place-items-end bg-black/60 backdrop-blur-sm" onClick={() => setOpen(false)}>

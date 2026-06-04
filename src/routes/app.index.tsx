@@ -1,8 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { Flame, Droplets, Dumbbell, Heart, ArrowRight, Calendar, Sparkles, Lock } from "lucide-react";
+import { Flame, Droplets, Dumbbell, Heart, ArrowRight, Calendar, Sparkles, Crown } from "lucide-react";
 import { Card, SectionTitle, Shell } from "@/components/Shell";
 import { useStore, todayISO } from "@/lib/pd-store";
-import { AdBanner } from "@/components/Premium";
 
 export const Route = createFileRoute("/app/")({
   head: () => ({ meta: [{ title: "Início · Personal Digital" }, { name: "description", content: "Seu painel diário." }] }),
@@ -41,6 +40,14 @@ function Dashboard() {
         </Link>
       </div>
 
+      {!isPremium && (
+        <div className="mt-4 flex items-center gap-2 rounded-2xl border border-border/60 bg-secondary/40 px-3 py-2 text-[11px]">
+          <Calendar className="h-3.5 w-3.5 text-primary" />
+          <span className="text-muted-foreground">Plano Básico:</span>
+          <span className="font-semibold text-foreground">1 acesso por semana de cada seção</span>
+        </div>
+      )}
+
       {/* Hero training card */}
       <Card className="mt-5 overflow-hidden">
         <div className="flex items-start justify-between">
@@ -62,76 +69,63 @@ function Dashboard() {
         )}
       </Card>
 
-      <AdBanner slot="Espaço de anúncio · 320x100" />
+      <div className="mt-3 grid grid-cols-2 gap-3">
+        <StatCard icon={Flame} label="Calorias" value={`${plan.calories}`} unit="kcal" tint="text-orange-300" />
+        <StatCard icon={Droplets} label="Água" value={`${(plan.water/1000).toFixed(1)}`} unit="L" tint="text-sky-300" />
+        <StatCard icon={Heart} label="Cardio" value={plan.cardio.split(",")[0]} tint="text-rose-300" />
+        <StatCard icon={Sparkles} label="Proteína" value={`${plan.protein}`} unit="g" tint="text-primary" />
+      </div>
 
-      {isPremium ? (
-        <>
-          <div className="mt-3 grid grid-cols-2 gap-3">
-            <StatCard icon={Flame} label="Calorias" value={`${plan.calories}`} unit="kcal" tint="text-orange-300" />
-            <StatCard icon={Droplets} label="Água" value={`${(plan.water/1000).toFixed(1)}`} unit="L" tint="text-sky-300" />
-            <StatCard icon={Heart} label="Cardio" value={plan.cardio.split(",")[0]} tint="text-rose-300" />
-            <StatCard icon={Sparkles} label="Proteína" value={`${plan.protein}`} unit="g" tint="text-primary" />
+      <SectionTitle action={<Link to="/app/week" className="text-xs font-medium text-primary">Ver semana</Link>}>
+        Progresso da semana
+      </SectionTitle>
+      <Card>
+        <div className="flex items-center justify-between">
+          <div>
+            <div className="text-3xl font-bold tabular-nums">{trainedThisWeek}<span className="text-muted-foreground">/{targetDays}</span></div>
+            <p className="text-xs text-muted-foreground">treinos concluídos</p>
           </div>
-
-          <SectionTitle action={<Link to="/app/week" className="text-xs font-medium text-primary">Ver semana</Link>}>
-            Progresso da semana
-          </SectionTitle>
-          <Card>
-            <div className="flex items-center justify-between">
-              <div>
-                <div className="text-3xl font-bold tabular-nums">{trainedThisWeek}<span className="text-muted-foreground">/{targetDays}</span></div>
-                <p className="text-xs text-muted-foreground">treinos concluídos</p>
+          <Calendar className="h-8 w-8 text-muted-foreground" />
+        </div>
+        <div className="mt-4 grid grid-cols-7 gap-1.5">
+          {plan.week.map((d, i) => {
+            const date = new Date(today); date.setDate(today.getDate() - dayIdx + i);
+            const iso = date.toISOString().slice(0,10);
+            const done = plan.completedDates.includes(iso);
+            const isToday = i === dayIdx;
+            return (
+              <div key={d.day} className={`rounded-xl border py-2 text-center ${isToday ? "border-primary" : "border-border/60"} ${done ? "bg-primary/15" : ""}`}>
+                <div className="text-[10px] uppercase text-muted-foreground">{d.day.slice(0,3)}</div>
+                <div className={`mt-1 text-sm font-semibold ${done ? "text-primary" : ""}`}>{date.getDate()}</div>
               </div>
-              <Calendar className="h-8 w-8 text-muted-foreground" />
-            </div>
-            <div className="mt-4 grid grid-cols-7 gap-1.5">
-              {plan.week.map((d, i) => {
-                const date = new Date(today); date.setDate(today.getDate() - dayIdx + i);
-                const iso = date.toISOString().slice(0,10);
-                const done = plan.completedDates.includes(iso);
-                const isToday = i === dayIdx;
-                return (
-                  <div key={d.day} className={`rounded-xl border py-2 text-center ${isToday ? "border-primary" : "border-border/60"} ${done ? "bg-primary/15" : ""}`}>
-                    <div className="text-[10px] uppercase text-muted-foreground">{d.day.slice(0,3)}</div>
-                    <div className={`mt-1 text-sm font-semibold ${done ? "text-primary" : ""}`}>{date.getDate()}</div>
-                  </div>
-                );
-              })}
-            </div>
-          </Card>
+            );
+          })}
+        </div>
+      </Card>
 
-          <SectionTitle action={<Link to="/app/nutrition" className="text-xs font-medium text-primary">Dieta completa</Link>}>
-            Hoje no prato
-          </SectionTitle>
-          <Card>
-            <MealRow label="Café da manhã" text={plan.meals.breakfast} />
-            <Divider />
-            <MealRow label="Almoço" text={plan.meals.lunch} />
-            <Divider />
-            <MealRow label="Lanche" text={plan.meals.snack} />
-            <Divider />
-            <MealRow label="Jantar" text={plan.meals.dinner} />
-          </Card>
-        </>
-      ) : (
-        <>
-          <SectionTitle>Recursos Premium</SectionTitle>
-          <div className="grid grid-cols-2 gap-3">
-            <LockedTile icon={Calendar} label="Plano semanal" />
-            <LockedTile icon={Flame} label="Alimentação" />
-            <LockedTile icon={Droplets} label="Hidratação" />
-            <LockedTile icon={Heart} label="Evolução" />
-          </div>
-        </>
-      )}
+      <SectionTitle action={<Link to="/app/nutrition" className="text-xs font-medium text-primary">Dieta completa</Link>}>
+        Hoje no prato
+      </SectionTitle>
+      <Card>
+        <MealRow label="Café da manhã" text={plan.meals.breakfast} />
+        <Divider />
+        <MealRow label="Almoço" text={plan.meals.lunch} />
+        <Divider />
+        <MealRow label="Lanche" text={plan.meals.snack} />
+        <Divider />
+        <MealRow label="Jantar" text={plan.meals.dinner} />
+      </Card>
 
       {!isPremium && (
         <Link to="/app/subscription" className="mt-5 block">
           <div className="relative overflow-hidden rounded-3xl border border-primary/30 bg-gradient-to-br from-primary/20 via-card to-card p-5">
             <div className="relative z-10">
               <p className="text-xs uppercase tracking-wider text-primary">Personal Digital Premium</p>
-              <h3 className="mt-1 text-lg font-bold">Desbloqueie dieta, evolução e semana completa</h3>
-              <span className="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-primary">Ver planos <ArrowRight className="h-4 w-4" /></span>
+              <h3 className="mt-1 text-lg font-bold">Pagamento único de R$ 29,90 · vitalício</h3>
+              <p className="mt-1 text-xs text-muted-foreground">Tudo diário, sem anúncios e para sempre.</p>
+              <span className="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-primary">
+                <Crown className="h-4 w-4" /> Tornar-se Premium <ArrowRight className="h-4 w-4" />
+              </span>
             </div>
             <Sparkles className="absolute -right-4 -top-4 h-24 w-24 text-primary/20" />
           </div>
@@ -161,15 +155,3 @@ function MealRow({ label, text }: { label: string; text: string }) {
   </div>;
 }
 function Divider() { return <div className="h-px bg-border/60" />; }
-
-function LockedTile({ icon: Icon, label }: { icon: typeof Flame; label: string }) {
-  return (
-    <Link to="/app/subscription" className="relative overflow-hidden rounded-2xl border border-border/60 bg-card/60 p-4">
-      <Icon className="h-5 w-5 text-muted-foreground" />
-      <div className="mt-3 text-sm font-semibold">{label}</div>
-      <div className="mt-1 flex items-center gap-1 text-[11px] text-primary">
-        <Lock className="h-3 w-3" /> Premium
-      </div>
-    </Link>
-  );
-}

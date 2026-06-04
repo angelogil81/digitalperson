@@ -14,30 +14,32 @@ const tiers = [
     id: "basic" as const,
     name: "Básico",
     price: "Grátis",
-    sub: "para sempre",
+    sub: "para sempre · com anúncios",
     features: [
-      "Treino diário",
-      "Visão do treino de hoje",
-      "Com anúncios",
+      "1 treino por semana",
+      "1 dieta por semana",
+      "1 hidratação por semana",
+      "1 evolução por semana",
+      "1 alimentação por semana",
+      "Com banner de anúncios",
     ],
-    cta: "Plano atual",
   },
   {
     id: "premium" as const,
     name: "Premium",
     price: "R$ 29,90",
-    sub: "/mês",
+    sub: "pagamento único · vitalício",
     badge: "Mais escolhido",
     features: [
-      "Tudo do Básico",
-      "Plano semanal completo de treino",
-      "Plano alimentar e hidratação",
+      "Tudo do Básico, sem limite semanal",
+      "Treino diário ilimitado",
+      "Dieta e hidratação diárias",
+      "Plano semanal completo",
       "Evolução com gráfico e histórico",
-      "Relatórios e ajuste automático",
       "Sem anúncios",
+      "Atualizações futuras incluídas",
       "Suporte prioritário",
     ],
-    cta: "Assinar Premium",
   },
 ];
 
@@ -62,7 +64,7 @@ function Subscription() {
           <Crown className="h-7 w-7 text-primary-foreground" />
         </div>
         <h1 className="mt-4 text-3xl font-bold tracking-tight">Acelere seus resultados</h1>
-        <p className="mt-2 text-sm text-muted-foreground">Escolha o plano que combina com a sua jornada.</p>
+        <p className="mt-2 text-sm text-muted-foreground">Pague uma vez e tenha acesso vitalício a tudo.</p>
       </div>
 
       <div className="mt-6 space-y-3">
@@ -81,8 +83,8 @@ function Subscription() {
                   </div>
                   <div className="mt-2 flex items-baseline gap-1">
                     <span className="text-3xl font-bold">{t.price}</span>
-                    <span className="text-sm text-muted-foreground">{t.sub}</span>
                   </div>
+                  <p className="mt-0.5 text-xs text-muted-foreground">{t.sub}</p>
                 </div>
                 <div className={`grid h-6 w-6 place-items-center rounded-full border-2 ${active ? "border-primary bg-primary" : "border-border"}`}>
                   {active && <Check className="h-3.5 w-3.5 text-primary-foreground" strokeWidth={3} />}
@@ -103,15 +105,15 @@ function Subscription() {
       </div>
 
       <Card className="mt-5 !p-4 text-center">
-        <p className="text-xs text-muted-foreground">7 dias grátis · cancele quando quiser · sem fidelidade</p>
+        <p className="text-xs text-muted-foreground">Pagamento único de R$ 29,90 · acesso vitalício · sem mensalidade</p>
       </Card>
 
       <button onClick={activate} className="mt-5 w-full rounded-2xl bg-primary py-4 text-base font-semibold text-primary-foreground shadow-lime transition active:scale-[0.98]">
-        {selected === "premium" ? "Começar 7 dias grátis" : "Continuar no Básico"}
+        {selected === "premium" ? "Pagar R$ 29,90 e liberar tudo" : "Continuar no Básico"}
       </button>
 
       <p className="mt-4 text-center text-[11px] text-muted-foreground">
-        Integração futura com RevenueCat / pagamento por assinatura.
+        Integração futura com gateway de pagamento (Stripe / RevenueCat).
       </p>
     </Shell>
   );
