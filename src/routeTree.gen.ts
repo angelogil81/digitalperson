@@ -20,7 +20,9 @@ import { Route as AppSubscriptionRouteImport } from './routes/app.subscription'
 import { Route as AppProgressRouteImport } from './routes/app.progress'
 import { Route as AppProfileRouteImport } from './routes/app.profile'
 import { Route as AppNutritionRouteImport } from './routes/app.nutrition'
+import { Route as AppMissionsRouteImport } from './routes/app.missions'
 import { Route as AppDailyRouteImport } from './routes/app.daily'
+import { Route as AppCoachRouteImport } from './routes/app.coach'
 
 const OnboardingRoute = OnboardingRouteImport.update({
   id: '/onboarding',
@@ -77,9 +79,19 @@ const AppNutritionRoute = AppNutritionRouteImport.update({
   path: '/nutrition',
   getParentRoute: () => AppRoute,
 } as any)
+const AppMissionsRoute = AppMissionsRouteImport.update({
+  id: '/missions',
+  path: '/missions',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppDailyRoute = AppDailyRouteImport.update({
   id: '/daily',
   path: '/daily',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppCoachRoute = AppCoachRouteImport.update({
+  id: '/coach',
+  path: '/coach',
   getParentRoute: () => AppRoute,
 } as any)
 
@@ -88,7 +100,9 @@ export interface FileRoutesByFullPath {
   '/app': typeof AppRouteWithChildren
   '/auth': typeof AuthRoute
   '/onboarding': typeof OnboardingRoute
+  '/app/coach': typeof AppCoachRoute
   '/app/daily': typeof AppDailyRoute
+  '/app/missions': typeof AppMissionsRoute
   '/app/nutrition': typeof AppNutritionRoute
   '/app/profile': typeof AppProfileRoute
   '/app/progress': typeof AppProgressRoute
@@ -101,7 +115,9 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/onboarding': typeof OnboardingRoute
+  '/app/coach': typeof AppCoachRoute
   '/app/daily': typeof AppDailyRoute
+  '/app/missions': typeof AppMissionsRoute
   '/app/nutrition': typeof AppNutritionRoute
   '/app/profile': typeof AppProfileRoute
   '/app/progress': typeof AppProgressRoute
@@ -116,7 +132,9 @@ export interface FileRoutesById {
   '/app': typeof AppRouteWithChildren
   '/auth': typeof AuthRoute
   '/onboarding': typeof OnboardingRoute
+  '/app/coach': typeof AppCoachRoute
   '/app/daily': typeof AppDailyRoute
+  '/app/missions': typeof AppMissionsRoute
   '/app/nutrition': typeof AppNutritionRoute
   '/app/profile': typeof AppProfileRoute
   '/app/progress': typeof AppProgressRoute
@@ -132,7 +150,9 @@ export interface FileRouteTypes {
     | '/app'
     | '/auth'
     | '/onboarding'
+    | '/app/coach'
     | '/app/daily'
+    | '/app/missions'
     | '/app/nutrition'
     | '/app/profile'
     | '/app/progress'
@@ -145,7 +165,9 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/onboarding'
+    | '/app/coach'
     | '/app/daily'
+    | '/app/missions'
     | '/app/nutrition'
     | '/app/profile'
     | '/app/progress'
@@ -159,7 +181,9 @@ export interface FileRouteTypes {
     | '/app'
     | '/auth'
     | '/onboarding'
+    | '/app/coach'
     | '/app/daily'
+    | '/app/missions'
     | '/app/nutrition'
     | '/app/profile'
     | '/app/progress'
@@ -255,6 +279,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppNutritionRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/missions': {
+      id: '/app/missions'
+      path: '/missions'
+      fullPath: '/app/missions'
+      preLoaderRoute: typeof AppMissionsRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/app/daily': {
       id: '/app/daily'
       path: '/daily'
@@ -262,11 +293,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppDailyRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/coach': {
+      id: '/app/coach'
+      path: '/coach'
+      fullPath: '/app/coach'
+      preLoaderRoute: typeof AppCoachRouteImport
+      parentRoute: typeof AppRoute
+    }
   }
 }
 
 interface AppRouteChildren {
+  AppCoachRoute: typeof AppCoachRoute
   AppDailyRoute: typeof AppDailyRoute
+  AppMissionsRoute: typeof AppMissionsRoute
   AppNutritionRoute: typeof AppNutritionRoute
   AppProfileRoute: typeof AppProfileRoute
   AppProgressRoute: typeof AppProgressRoute
@@ -277,7 +317,9 @@ interface AppRouteChildren {
 }
 
 const AppRouteChildren: AppRouteChildren = {
+  AppCoachRoute: AppCoachRoute,
   AppDailyRoute: AppDailyRoute,
+  AppMissionsRoute: AppMissionsRoute,
   AppNutritionRoute: AppNutritionRoute,
   AppProfileRoute: AppProfileRoute,
   AppProgressRoute: AppProgressRoute,
@@ -298,3 +340,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
