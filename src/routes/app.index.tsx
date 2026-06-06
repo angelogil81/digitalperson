@@ -1,7 +1,9 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { Flame, Droplets, Dumbbell, Heart, ArrowRight, Calendar, Sparkles, Crown } from "lucide-react";
+import { Flame, Droplets, Dumbbell, Heart, ArrowRight, Calendar, Sparkles, Crown, Sun, Trophy } from "lucide-react";
 import { Card, SectionTitle, Shell } from "@/components/Shell";
 import { useStore, todayISO } from "@/lib/pd-store";
+import { quoteOfDay } from "@/lib/quotes";
+import { levelFor } from "@/lib/missions";
 
 export const Route = createFileRoute("/app/")({
   head: () => ({ meta: [{ title: "Início · Personal Digital" }, { name: "description", content: "Seu painel diário." }] }),
@@ -47,6 +49,54 @@ function Dashboard() {
           <span className="font-semibold text-foreground">1 acesso por semana de cada seção</span>
         </div>
       )}
+
+      {/* Coach diário hero */}
+      <Link to="/app/coach" className="mt-5 block">
+        <Card className="!p-5">
+          <div className="flex items-center gap-3">
+            <div className="bg-gradient-lime grid h-12 w-12 shrink-0 place-items-center rounded-2xl shadow-lime">
+              <Sun className="h-6 w-6 text-primary-foreground" />
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="text-[11px] uppercase tracking-wider text-primary">Coach diário</p>
+              <p className="mt-0.5 truncate text-sm font-semibold">"{quoteOfDay()}"</p>
+            </div>
+            <ArrowRight className="h-4 w-4 text-muted-foreground" />
+          </div>
+        </Card>
+      </Link>
+
+      {/* Level + Missions shortcut */}
+      <Link to="/app/missions" className="mt-3 block">
+        <Card className="!p-4">
+          <div className="flex items-center gap-3">
+            <div className="bg-gradient-lime grid h-10 w-10 place-items-center rounded-2xl text-sm font-black text-primary-foreground shadow-lime">
+              {levelFor(plan.xp || 0)}
+            </div>
+            <div className="flex-1">
+              <div className="text-sm font-semibold">Nível {levelFor(plan.xp || 0)} · {plan.xp || 0} XP</div>
+              <div className="text-[11px] text-muted-foreground">Missões diárias e desafios semanais</div>
+            </div>
+            <Trophy className="h-5 w-5 text-yellow-300" />
+          </div>
+        </Card>
+      </Link>
+
+      {/* Quick access */}
+      <div className="mt-3 grid grid-cols-3 gap-2">
+        <Link to="/app/daily" className="rounded-2xl border border-border/60 bg-card/60 px-2 py-3 text-center">
+          <div className="text-lg">🔥</div>
+          <div className="mt-0.5 text-[11px] font-semibold">Diário</div>
+        </Link>
+        <Link to="/app/nutrition" className="rounded-2xl border border-border/60 bg-card/60 px-2 py-3 text-center">
+          <div className="text-lg">🍽️</div>
+          <div className="mt-0.5 text-[11px] font-semibold">Dieta</div>
+        </Link>
+        <Link to="/app/week" className="rounded-2xl border border-border/60 bg-card/60 px-2 py-3 text-center">
+          <div className="text-lg">📅</div>
+          <div className="mt-0.5 text-[11px] font-semibold">Semana</div>
+        </Link>
+      </div>
 
       {/* Hero training card */}
       <Card className="mt-5 overflow-hidden">

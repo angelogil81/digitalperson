@@ -58,6 +58,11 @@ export type Plan = {
   checkins?: CheckIn[];
   habits?: HabitsLog;
   achievements?: string[];
+  // Phase 5 — XP / missions / weekly challenges
+  xp?: number;
+  xpClaims?: string[];           // de-dup keys: "YYYY-MM-DD:source"
+  challengeClaims?: string[];    // claimed weekly challenges: "<weekKey>:<id>"
+  coachDoneDates?: string[];     // days the user marked as "complete" in coach
 };
 
 const KEY_PROFILE = "pd_profile";

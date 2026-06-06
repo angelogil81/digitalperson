@@ -16,6 +16,7 @@ import {
   setPlan,
 } from "@/lib/pd-store";
 import { ACHIEVEMENTS, syncAchievements } from "@/lib/gamification";
+import { autoClaimMissions } from "@/lib/missions";
 import { Droplets, Moon, Footprints, Dumbbell, Apple, Flame, Check, Sparkles } from "lucide-react";
 
 export const Route = createFileRoute("/app/daily")({
@@ -44,6 +45,7 @@ function Daily() {
     const p = getPlan();
     if (p) {
       const newly = syncAchievements(p);
+      autoClaimMissions(p);
       if (newly.length) setPlan(p);
     }
   }, [plan?.checkins?.length, plan?.completedDates?.length, plan?.habits, plan?.progress?.length]);
