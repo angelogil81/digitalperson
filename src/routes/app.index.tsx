@@ -82,6 +82,22 @@ function Dashboard() {
         </Card>
       </Link>
 
+      {/* Quick access */}
+      <div className="mt-3 grid grid-cols-3 gap-2">
+        <Link to="/app/daily" className="rounded-2xl border border-border/60 bg-card/60 px-2 py-3 text-center">
+          <div className="text-lg">🔥</div>
+          <div className="mt-0.5 text-[11px] font-semibold">Diário</div>
+        </Link>
+        <Link to="/app/nutrition" className="rounded-2xl border border-border/60 bg-card/60 px-2 py-3 text-center">
+          <div className="text-lg">🍽️</div>
+          <div className="mt-0.5 text-[11px] font-semibold">Dieta</div>
+        </Link>
+        <Link to="/app/week" className="rounded-2xl border border-border/60 bg-card/60 px-2 py-3 text-center">
+          <div className="text-lg">📅</div>
+          <div className="mt-0.5 text-[11px] font-semibold">Semana</div>
+        </Link>
+      </div>
+
       {/* Hero training card */}
       <Card className="mt-5 overflow-hidden">
         <div className="flex items-start justify-between">
