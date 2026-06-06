@@ -1,10 +1,10 @@
 import { Link, useLocation } from "@tanstack/react-router";
-import { Home, Dumbbell, Flame, TrendingUp, User } from "lucide-react";
+import { Home, Dumbbell, Sun, TrendingUp, User } from "lucide-react";
 
 const items = [
   { to: "/app", label: "Início", icon: Home, exact: true },
+  { to: "/app/coach", label: "Coach", icon: Sun },
   { to: "/app/workout", label: "Treino", icon: Dumbbell },
-  { to: "/app/daily", label: "Diário", icon: Flame },
   { to: "/app/progress", label: "Evolução", icon: TrendingUp },
   { to: "/app/profile", label: "Perfil", icon: User },
 ];
