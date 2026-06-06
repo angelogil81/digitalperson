@@ -28,6 +28,19 @@ export type Exercise = { name: string; sets: number; reps: string; rest: string 
 export type DayPlan = { day: string; focus: string; rest?: boolean; exercises: Exercise[]; cardio?: string };
 export type MealPlan = { breakfast: string; lunch: string; snack: string; dinner: string };
 export type BasicFeature = "workout" | "nutrition" | "progress" | "week";
+
+export type CheckIn = {
+  date: string;       // YYYY-MM-DD
+  mood: number;       // 1-5
+  energy: number;     // 1-5
+  sleep: number;      // 1-5
+  soreness: number;   // 1-5 (5 = sem dor)
+  motivation: number; // 1-5
+};
+
+export type HabitKey = "water" | "sleep_early" | "walk" | "train" | "fruits";
+export type HabitsLog = Record<string, Partial<Record<HabitKey, boolean>>>; // date -> habit -> done
+
 export type Plan = {
   goalLabel: string;
   calories: number;
@@ -39,7 +52,12 @@ export type Plan = {
   completedDates: string[]; // YYYY-MM-DD
   progress: ProgressEntry[];
   tier: "basic" | "premium";
-  basicUsage?: Partial<Record<BasicFeature, string>>; // feature -> weekKey
+  basicUsage?: Partial<Record<BasicFeature, string>>;
+  // Phase 1 additions (optional for backwards compat with saved plans)
+  startDate?: string;
+  checkins?: CheckIn[];
+  habits?: HabitsLog;
+  achievements?: string[];
 };
 
 const KEY_PROFILE = "pd_profile";
