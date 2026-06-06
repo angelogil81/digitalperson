@@ -20,6 +20,7 @@ import { Route as AppSubscriptionRouteImport } from './routes/app.subscription'
 import { Route as AppProgressRouteImport } from './routes/app.progress'
 import { Route as AppProfileRouteImport } from './routes/app.profile'
 import { Route as AppNutritionRouteImport } from './routes/app.nutrition'
+import { Route as AppDailyRouteImport } from './routes/app.daily'
 
 const OnboardingRoute = OnboardingRouteImport.update({
   id: '/onboarding',
@@ -76,12 +77,18 @@ const AppNutritionRoute = AppNutritionRouteImport.update({
   path: '/nutrition',
   getParentRoute: () => AppRoute,
 } as any)
+const AppDailyRoute = AppDailyRouteImport.update({
+  id: '/daily',
+  path: '/daily',
+  getParentRoute: () => AppRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/app': typeof AppRouteWithChildren
   '/auth': typeof AuthRoute
   '/onboarding': typeof OnboardingRoute
+  '/app/daily': typeof AppDailyRoute
   '/app/nutrition': typeof AppNutritionRoute
   '/app/profile': typeof AppProfileRoute
   '/app/progress': typeof AppProgressRoute
@@ -94,6 +101,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/onboarding': typeof OnboardingRoute
+  '/app/daily': typeof AppDailyRoute
   '/app/nutrition': typeof AppNutritionRoute
   '/app/profile': typeof AppProfileRoute
   '/app/progress': typeof AppProgressRoute
@@ -108,6 +116,7 @@ export interface FileRoutesById {
   '/app': typeof AppRouteWithChildren
   '/auth': typeof AuthRoute
   '/onboarding': typeof OnboardingRoute
+  '/app/daily': typeof AppDailyRoute
   '/app/nutrition': typeof AppNutritionRoute
   '/app/profile': typeof AppProfileRoute
   '/app/progress': typeof AppProgressRoute
@@ -123,6 +132,7 @@ export interface FileRouteTypes {
     | '/app'
     | '/auth'
     | '/onboarding'
+    | '/app/daily'
     | '/app/nutrition'
     | '/app/profile'
     | '/app/progress'
@@ -135,6 +145,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/onboarding'
+    | '/app/daily'
     | '/app/nutrition'
     | '/app/profile'
     | '/app/progress'
@@ -148,6 +159,7 @@ export interface FileRouteTypes {
     | '/app'
     | '/auth'
     | '/onboarding'
+    | '/app/daily'
     | '/app/nutrition'
     | '/app/profile'
     | '/app/progress'
@@ -243,10 +255,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppNutritionRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/daily': {
+      id: '/app/daily'
+      path: '/daily'
+      fullPath: '/app/daily'
+      preLoaderRoute: typeof AppDailyRouteImport
+      parentRoute: typeof AppRoute
+    }
   }
 }
 
 interface AppRouteChildren {
+  AppDailyRoute: typeof AppDailyRoute
   AppNutritionRoute: typeof AppNutritionRoute
   AppProfileRoute: typeof AppProfileRoute
   AppProgressRoute: typeof AppProgressRoute
@@ -257,6 +277,7 @@ interface AppRouteChildren {
 }
 
 const AppRouteChildren: AppRouteChildren = {
+  AppDailyRoute: AppDailyRoute,
   AppNutritionRoute: AppNutritionRoute,
   AppProfileRoute: AppProfileRoute,
   AppProgressRoute: AppProgressRoute,
@@ -277,13 +298,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

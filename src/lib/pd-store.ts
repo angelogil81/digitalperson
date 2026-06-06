@@ -28,6 +28,19 @@ export type Exercise = { name: string; sets: number; reps: string; rest: string 
 export type DayPlan = { day: string; focus: string; rest?: boolean; exercises: Exercise[]; cardio?: string };
 export type MealPlan = { breakfast: string; lunch: string; snack: string; dinner: string };
 export type BasicFeature = "workout" | "nutrition" | "progress" | "week";
+
+export type CheckIn = {
+  date: string;       // YYYY-MM-DD
+  mood: number;       // 1-5
+  energy: number;     // 1-5
+  sleep: number;      // 1-5
+  soreness: number;   // 1-5 (5 = sem dor)
+  motivation: number; // 1-5
+};
+
+export type HabitKey = "water" | "sleep_early" | "walk" | "train" | "fruits";
+export type HabitsLog = Record<string, Partial<Record<HabitKey, boolean>>>; // date -> habit -> done
+
 export type Plan = {
   goalLabel: string;
   calories: number;
@@ -39,7 +52,12 @@ export type Plan = {
   completedDates: string[]; // YYYY-MM-DD
   progress: ProgressEntry[];
   tier: "basic" | "premium";
-  basicUsage?: Partial<Record<BasicFeature, string>>; // feature -> weekKey
+  basicUsage?: Partial<Record<BasicFeature, string>>;
+  // Phase 1 additions (optional for backwards compat with saved plans)
+  startDate?: string;
+  checkins?: CheckIn[];
+  habits?: HabitsLog;
+  achievements?: string[];
 };
 
 const KEY_PROFILE = "pd_profile";
@@ -123,4 +141,69 @@ export function isBasicFeatureUnlocked(plan: Plan | null, feature: BasicFeature)
   if (!plan) return false;
   if (plan.tier === "premium") return true;
   return plan.basicUsage?.[feature] === weekKey();
+}
+
+// ---------- Phase 1: daily engagement helpers ----------
+
+export function ensureStartDate() {
+  const p = getPlan(); if (!p) return;
+  if (!p.startDate) { p.startDate = todayISO(); setPlan(p); }
+}
+
+export function daysSinceStart(plan: Plan | null): number {
+  if (!plan?.startDate) return 0;
+  const start = new Date(plan.startDate + "T00:00:00");
+  const diff = Date.now() - start.getTime();
+  return Math.max(1, Math.floor(diff / 86400000) + 1);
+}
+
+export function saveCheckIn(c: Omit<CheckIn, "date"> & { date?: string }) {
+  const p = getPlan(); if (!p) return;
+  const date = c.date || todayISO();
+  const list = (p.checkins || []).filter((x) => x.date !== date);
+  list.push({ ...c, date });
+  p.checkins = list.sort((a, b) => a.date.localeCompare(b.date));
+  setPlan(p);
+}
+
+export function getTodayCheckIn(plan: Plan | null): CheckIn | undefined {
+  return plan?.checkins?.find((c) => c.date === todayISO());
+}
+
+export function checkInScore(c: CheckIn): number {
+  // 0-100
+  return Math.round(((c.mood + c.energy + c.sleep + c.soreness + c.motivation) / 25) * 100);
+}
+
+export function toggleHabit(habit: HabitKey, date: string = todayISO()) {
+  const p = getPlan(); if (!p) return;
+  const log = { ...(p.habits || {}) };
+  const day = { ...(log[date] || {}) };
+  day[habit] = !day[habit];
+  log[date] = day;
+  p.habits = log;
+  setPlan(p);
+}
+
+export function habitStreak(plan: Plan | null, habit: HabitKey): number {
+  if (!plan?.habits) return 0;
+  let streak = 0;
+  const d = new Date();
+  // If today not done, start counting from yesterday so users keep their streak.
+  if (!plan.habits[todayISO()]?.[habit]) d.setDate(d.getDate() - 1);
+  for (;;) {
+    const iso = d.toISOString().slice(0, 10);
+    if (plan.habits[iso]?.[habit]) { streak++; d.setDate(d.getDate() - 1); }
+    else break;
+  }
+  return streak;
+}
+
+export function unlockAchievement(id: string) {
+  const p = getPlan(); if (!p) return false;
+  const list = p.achievements || [];
+  if (list.includes(id)) return false;
+  p.achievements = [...list, id];
+  setPlan(p);
+  return true;
 }
