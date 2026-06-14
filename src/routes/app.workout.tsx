@@ -4,6 +4,7 @@ import { Check, Timer, Repeat, Flame } from "lucide-react";
 import { Card, Shell, SectionTitle } from "@/components/Shell";
 import { useStore, getPlan, setPlan, todayISO } from "@/lib/pd-store";
 import { WeeklyGate } from "@/components/Premium";
+import { ExerciseImage } from "@/components/ExerciseImage";
 
 export const Route = createFileRoute("/app/workout")({
   head: () => ({ meta: [{ title: "Treino · Personal Digital" }, { name: "description", content: "Seu treino de hoje." }] }),
@@ -67,14 +68,17 @@ function Workout() {
               {today.exercises.map((ex, i) => {
                 const isDone = done.has(i) || completedToday;
                 return (
-                  <button key={i} onClick={() => toggle(i)} className={`w-full rounded-2xl border p-4 text-left transition ${isDone ? "border-primary/60 bg-primary/10" : "border-border/60 bg-card/60"}`}>
+                  <button key={i} onClick={() => toggle(i)} className={`w-full rounded-3xl border p-3 text-left transition ${isDone ? "border-primary/60 bg-primary/10" : "border-border/60 bg-card/60"}`}>
                     <div className="flex items-start gap-3">
-                      <div className={`mt-0.5 grid h-7 w-7 shrink-0 place-items-center rounded-full border-2 ${isDone ? "border-primary bg-primary" : "border-border"}`}>
-                        {isDone && <Check className="h-4 w-4 text-primary-foreground" strokeWidth={3} />}
-                      </div>
-                      <div className="flex-1">
-                        <div className={`text-base font-semibold ${isDone ? "line-through opacity-60" : ""}`}>{ex.name}</div>
-                        <div className="mt-2 flex flex-wrap gap-2 text-xs">
+                      <ExerciseImage name={ex.name} />
+                      <div className="flex-1 pt-0.5">
+                        <div className="flex items-start gap-2">
+                          <div className={`mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded-full border-2 ${isDone ? "border-primary bg-primary" : "border-border"}`}>
+                            {isDone && <Check className="h-3.5 w-3.5 text-primary-foreground" strokeWidth={3} />}
+                          </div>
+                          <div className={`flex-1 text-base font-semibold leading-tight ${isDone ? "line-through opacity-60" : ""}`}>{ex.name}</div>
+                        </div>
+                        <div className="mt-2 flex flex-wrap gap-1.5 text-xs">
                           <Pill icon={Repeat}>{ex.sets} séries</Pill>
                           <Pill>{ex.reps} reps</Pill>
                           <Pill icon={Timer}>{ex.rest}</Pill>
