@@ -51,15 +51,13 @@ function Landing() {
 
 function CTAButton({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   return (
-    <a
-      href={APP_URL}
-      target="_blank"
-      rel="noopener noreferrer"
+    <Link
+      to="/auth"
       className={`group inline-flex items-center justify-center gap-2 rounded-2xl bg-primary px-6 py-4 text-base font-semibold text-primary-foreground shadow-lime transition-all active:scale-[0.98] ${className}`}
     >
       {children}
       <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-0.5" />
-    </a>
+    </Link>
   );
 }
 
@@ -74,14 +72,12 @@ function Header() {
           <a href="#planos" className="hover:text-foreground">Planos</a>
           <a href="#faq" className="hover:text-foreground">FAQ</a>
         </nav>
-        <a
-          href={APP_URL}
-          target="_blank"
-          rel="noopener noreferrer"
+        <Link
+          to="/auth"
           className="rounded-full bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground shadow-lime md:text-sm"
         >
           Adquira agora
-        </a>
+        </Link>
       </div>
     </header>
   );
