@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import {
   ArrowRight,
   Dumbbell,
@@ -14,8 +14,6 @@ import {
   Flame,
 } from "lucide-react";
 import { Logo } from "@/components/Logo";
-
-const APP_URL = "https://digitalperson.lovable.app";
 
 export const Route = createFileRoute("/")({
   head: () => ({
