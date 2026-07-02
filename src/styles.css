@@ -123,4 +123,11 @@
     100% { box-shadow: 0 0 0 0 oklch(0.88 0.20 130 / 0%); }
   }
   .pulse-ring { animation: pulse-ring 2s infinite; }
+
+  @keyframes ex-gif-pulse {
+    0%, 100% { transform: scale(1) rotate(-2deg); }
+    50%      { transform: scale(1.12) rotate(3deg); }
+  }
+  .ex-gif-pulse { animation: ex-gif-pulse 1.4s ease-in-out infinite; }
 }
+
