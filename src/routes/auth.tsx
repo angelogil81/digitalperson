@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import { ArrowLeft, Mail, Lock, User as UserIcon, Eye, EyeOff, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
-import { lovable } from "@/integrations/lovable";
 import { setAuth, getProfile } from "@/lib/pd-store";
 import { Logo } from "@/components/Logo";
 
@@ -93,31 +92,6 @@ function AuthPage() {
     setMode("login");
   }
 
-  async function handleGoogle() {
-    setLoading(true);
-    const result = await lovable.auth.signInWithOAuth("google", {
-      redirect_uri: window.location.origin + "/auth",
-    });
-    if (result.error) {
-      setLoading(false);
-      return toast.error("Falha ao entrar com Google.");
-    }
-    if (result.redirected) return; // browser redirecting
-    // Already signed in via token flow
-    const { data } = await supabase.auth.getSession();
-    if (data.session) {
-      setAuth({
-        email: data.session.user.email ?? "",
-        name:
-          (data.session.user.user_metadata?.name as string) ??
-          (data.session.user.user_metadata?.full_name as string) ??
-          data.session.user.email?.split("@")[0] ??
-          "",
-      });
-      navigate({ to: getProfile() ? "/app" : "/onboarding" });
-    }
-    setLoading(false);
-  }
 
   return (
     <div className="mx-auto min-h-screen w-full max-w-md px-6 pb-10 pt-8 sm:px-8">
@@ -166,8 +140,6 @@ function AuthPage() {
           </button>
 
           <SubmitButton loading={loading}>Entrar</SubmitButton>
-          <Divider />
-          <GoogleButton loading={loading} onClick={handleGoogle} />
         </form>
       )}
 
@@ -179,8 +151,6 @@ function AuthPage() {
           <PasswordField placeholder="Confirmar senha" value={confirm} onChange={setConfirm} show={showConfirm} onToggle={() => setShowConfirm((s) => !s)} autoComplete="new-password" />
 
           <SubmitButton loading={loading}>Criar conta</SubmitButton>
-          <Divider />
-          <GoogleButton loading={loading} onClick={handleGoogle} />
         </form>
       )}
 
