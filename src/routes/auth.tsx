@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { ArrowLeft, Mail, Lock, User as UserIcon, Eye, EyeOff, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
-import { setAuth, getProfile } from "@/lib/pd-store";
+import { setAuth, getProfile, syncUserScope } from "@/lib/pd-store";
 import { Logo } from "@/components/Logo";
 
 export const Route = createFileRoute("/auth")({
@@ -31,6 +31,7 @@ function AuthPage() {
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
       if (data.session) {
+        syncUserScope(data.session.user.id);
         setAuth({
           email: data.session.user.email ?? "",
           name: (data.session.user.user_metadata?.name as string) ?? data.session.user.email?.split("@")[0] ?? "",
@@ -47,6 +48,7 @@ function AuthPage() {
     const { data, error } = await supabase.auth.signInWithPassword({ email, password });
     setLoading(false);
     if (error) return toast.error(error.message);
+    if (data.user) syncUserScope(data.user.id);
     setAuth({
       email: data.user?.email ?? email,
       name: (data.user?.user_metadata?.name as string) ?? email.split("@")[0],
@@ -71,6 +73,7 @@ function AuthPage() {
     setLoading(false);
     if (error) return toast.error(error.message);
     if (data.session) {
+      syncUserScope(data.session.user.id);
       setAuth({ email, name });
       navigate({ to: "/onboarding" });
     } else {

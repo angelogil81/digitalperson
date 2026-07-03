@@ -2,7 +2,7 @@ import { createFileRoute, Outlet, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { BottomNav } from "@/components/BottomNav";
 import { AdFooter } from "@/components/Premium";
-import { getProfile, setAuth } from "@/lib/pd-store";
+import { getProfile, setAuth, syncUserScope } from "@/lib/pd-store";
 import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/app")({
@@ -16,9 +16,11 @@ function AppLayout() {
   useEffect(() => {
     const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
       if (!session) {
+        syncUserScope(null);
         setAuth(null);
         navigate({ to: "/auth" });
       } else {
+        syncUserScope(session.user.id);
         setAuth({
           email: session.user.email ?? "",
           name:
@@ -34,6 +36,7 @@ function AppLayout() {
         navigate({ to: "/auth" });
         return;
       }
+      syncUserScope(data.session.user.id);
       setAuth({
         email: data.session.user.email ?? "",
         name:
