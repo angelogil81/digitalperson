@@ -68,8 +68,24 @@ export type Plan = {
 const KEY_PROFILE = "pd_profile";
 const KEY_PLAN = "pd_plan";
 const KEY_AUTH = "pd_auth";
+const KEY_UID = "pd_uid";
 
 export const SUPPORT_EMAIL = "suporte@personaldigital.app";
+
+// Ensure each authenticated user starts with clean data.
+// If the stored uid differs from the incoming one, wipe profile+plan.
+export function syncUserScope(userId: string | null | undefined) {
+  if (typeof window === "undefined") return;
+  const prev = localStorage.getItem(KEY_UID);
+  const next = userId || null;
+  if (prev !== next) {
+    localStorage.removeItem(KEY_PROFILE);
+    localStorage.removeItem(KEY_PLAN);
+    if (next) localStorage.setItem(KEY_UID, next);
+    else localStorage.removeItem(KEY_UID);
+    window.dispatchEvent(new Event("pd-store"));
+  }
+}
 
 export function getAuth(): { email: string; name: string } | null {
   if (typeof window === "undefined") return null;
