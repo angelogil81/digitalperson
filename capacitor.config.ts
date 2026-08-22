@@ -3,14 +3,9 @@ import type { CapacitorConfig } from "@capacitor/cli";
 const config: CapacitorConfig = {
   appId: "app.personaldigital.mobile",
   appName: "Personal Digital",
-  webDir: "capacitor-www",
-  server: {
-    // O app é um web app SSR (TanStack Start), por isso o APK carrega a versão
-    // publicada. Para rodar 100% offline seria necessário um build estático.
-    url: "https://digitalperson.lovable.app",
-    cleartext: false,
-    androidScheme: "https",
-  },
+  // App Android nativo: o bundle web é empacotado dentro do APK (offline-first).
+  // Gere com `npm run android:build` (CAPACITOR=1 vite build + cap sync).
+  webDir: "dist/client",
   android: {
     backgroundColor: "#0B0F0C",
     allowMixedContent: false,

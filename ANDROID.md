@@ -1,16 +1,16 @@
-# Personal Digital — APK Android (Capacitor)
+# Personal Digital — App Android nativo (Capacitor)
 
-O projeto já está configurado com Capacitor. Siga os passos abaixo no VS Code.
+O app agora é **nativo e offline-first**: todo o bundle web é empacotado dentro do
+APK (`dist/client`), sem depender do site publicado. Os dados continuam no
+dispositivo (localStorage) e o login usa a nuvem via HTTPS.
 
 ## 1. Pré-requisitos
 
 - Node 20+
-- Android Studio (com Android SDK 34 e JDK 17)
-- Variável `ANDROID_HOME` configurada
+- Android Studio (Android SDK 34 + JDK 17)
+- `ANDROID_HOME` configurado
 
-## 2. Baixar o projeto e instalar
-
-No GitHub do projeto (botão **Export to GitHub** no Lovable), clone e rode:
+## 2. Clonar e instalar
 
 ```bash
 git clone <seu-repo>
@@ -18,63 +18,54 @@ cd <seu-repo>
 npm install
 ```
 
-## 3. Adicionar a plataforma Android
+## 3. Gerar o bundle nativo e a plataforma Android
 
 ```bash
-npx cap add android
-npx cap sync android
-```
-
-Isso cria a pasta `android/` (projeto Gradle nativo).
-
-## 4. Abrir no Android Studio
-
-```bash
+npm run build:capacitor   # build 100% client-side em dist/client
+npx cap add android       # só na primeira vez
+npm run android:build     # rebuild + cap sync android
 npx cap open android
 ```
 
-Rode no emulador ou celular pelo botão ▶.
+Rode no emulador ou celular pelo botão ▶ do Android Studio.
 
-## 5. Gerar o APK
+## 4. Gerar o APK
 
-No Android Studio: **Build → Build Bundle(s)/APK(s) → Build APK(s)**.
+Android Studio: **Build → Build Bundle(s)/APK(s) → Build APK(s)**
 
-Ou por linha de comando:
+Ou via linha de comando:
 
 ```bash
 cd android
-./gradlew assembleDebug        # APK de teste
-./gradlew assembleRelease      # APK para publicar (precisa de keystore)
+./gradlew assembleDebug     # APK de teste
+./gradlew assembleRelease   # release (precisa de keystore)
 ```
 
-O APK sai em `android/app/build/outputs/apk/`.
+Saída em `android/app/build/outputs/apk/`.
 
-## 6. Assinatura para a Play Store
+## 5. Assinatura para a Play Store
 
 ```bash
 keytool -genkey -v -keystore personal-digital.keystore -alias personaldigital \
   -keyalg RSA -keysize 2048 -validity 10000
 ```
 
-Em `android/app/build.gradle`, adicione o `signingConfigs` com esse keystore e depois gere o AAB:
+Configure `signingConfigs` em `android/app/build.gradle` e gere o AAB:
 
 ```bash
 ./gradlew bundleRelease
 ```
 
-## Como funciona
+## 6. Atualizações
 
-O `capacitor.config.ts` aponta o WebView para `https://digitalperson.lovable.app`.
-Sempre que você publicar no Lovable, o app Android recebe a atualização
-automaticamente — sem precisar de novo APK.
+Como o conteúdo agora vive dentro do APK, cada mudança no app exige
+`npm run android:build` e uma nova versão do APK/AAB (é assim que funciona um
+app nativo). O `versionCode`/`versionName` ficam em `android/app/build.gradle`.
 
-Se quiser trocar o domínio, edite `server.url` em `capacitor.config.ts` e rode
-`npx cap sync android`.
-
-## Ícone e splash
+## 7. Ícone e splash
 
 ```bash
 npm i -D @capacitor/assets
-# coloque icon.png (1024x1024) e splash.png (2732x2732) em ./assets
+# icon.png (1024x1024) e splash.png (2732x2732) em ./assets
 npx capacitor-assets generate --android
 ```
