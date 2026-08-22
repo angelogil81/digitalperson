@@ -12,7 +12,9 @@
     "format": "prettier --write .",
     "android:add": "cap add android",
     "android:sync": "cap sync android",
-    "android:open": "cap open android"
+    "android:open": "cap open android",
+    "build:capacitor": "CAPACITOR=1 vite build",
+    "android:build": "CAPACITOR=1 vite build && cap sync android"
   },
   "dependencies": {
     "@capacitor/android": "^8.5.0",
